@@ -21,7 +21,7 @@ if %errorLevel% neq 0 (
 
 REM Configurar IP Estatico
 echo Configurando IP...
-netsh interface ip set address "Local Area Connection" static 192.168.56.103 255.255.255.0 192.168.56.1
+netsh interface ip set address "Local Area Connection" static 192.168.56.103 255.255.255.0
 
 REM Configurar DNS
 echo Configurando DNS...

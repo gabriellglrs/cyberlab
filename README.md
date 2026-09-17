@@ -67,29 +67,29 @@ O **CyberLab** é um laboratório isolado e seguro para aprender cybersecurity n
 │                       Oracle VirtualBox                             │
 │                                                                     │
 │    ┌─────────────────────────────────────────────────────────┐     │
-│    │              REDE: CyberLab (NAT Network)                │     │
+│    │           REDE: CyberLab (Internal Network)              │     │
 │    │                 192.168.56.0/24                          │     │
-│    │                 Gateway: 192.168.56.1                    │     │
+│    │                 ⚠️ SEM GATEWAY (P2P)                     │     │
 │    │                                                          │     │
 │    │   ┌────────────────┐     ┌────────────────┐             │     │
-│    │   │   KALI LINUX   │     │ METASPLOIT. 2  │             │     │
-│    │   │    Atacante    │────▶│   Alvo Linux   │             │     │
+│    │   │   KALI LINUX   │◀───▶│ METASPLOIT. 2  │             │     │
+│    │   │    Atacante    │     │   Alvo Linux   │             │     │
 │    │   │  .56.10 :22    │     │  .56.101 :22   │             │     │
 │    │   └────────────────┘     └────────────────┘             │     │
-│    │          │                       │                       │     │
-│    │          │       ┌────────────────┤                       │     │
-│    │          │       │                │                       │     │
-│    │          ▼       ▼                ▼                       │     │
+│    │          │    ▲                │    ▲                    │     │
+│    │          │    │                │    │                    │     │
+│    │          ▼    │                ▼    │                    │     │
 │    │   ┌────────────────┐     ┌────────────────┐             │     │
-│    │   │ METASPLOIT. 3  │     │ METASPLOIT. 3  │             │     │
+│    │   │ METASPLOIT. 3  │◀───▶│ METASPLOIT. 3  │             │     │
 │    │   │  Linux (14.04) │     │Windows(2008R2) │             │     │
 │    │   │  .56.102 :22   │     │  .56.103 :3389 │             │     │
 │    │   └────────────────┘     └────────────────┘             │     │
 │    │                                                          │     │
+│    │   ⚠️ VMs se comunicam DIRETAMENTE (sem router)           │     │
 │    └─────────────────────────────────────────────────────────┘     │
 │                                                                     │
 │    ┌─────────────────────────────────────────────────────────┐     │
-│    │                    DOCKER HOST                           │     │
+│    │                    DOCKER HOST (no Windows)              │     │
 │    │                                                          │     │
 │    │   ┌────────────────┐     ┌────────────────┐             │     │
 │    │   │  JUICE SHOP    │     │     DVWA       │             │     │
@@ -106,14 +106,16 @@ O **CyberLab** é um laboratório isolado e seguro para aprender cybersecurity n
 
 ### Tabela de Endereçamento
 
-| Máquina | IP | Máscara | Gateway | DNS | Portas Expostas |
-|---------|-----|---------|---------|-----|-----------------|
-| 🐉 **Kali Linux** | `192.168.56.10` | 255.255.255.0 | 192.168.56.1 | 8.8.8.8 | 22 (SSH) |
-| 💀 **Metasploitable 2** | `192.168.56.101` | 255.255.255.0 | 192.168.56.1 | 8.8.8.8 | 21,22,23,25,80,139,445,3306,5432,8080 |
-| 💀 **Metasploitable 3 Linux** | `192.168.56.102` | 255.255.255.0 | 192.168.56.1 | 8.8.8.8 | 21,22,23,25,80,139,445,3306,8080,8181,8443 |
-| 🪟 **Metasploitable 3 Windows** | `192.168.56.103` | 255.255.255.0 | 192.168.56.1 | 8.8.8.8 | 21,22,80,135,139,445,3389,5985,5986 |
-| 🧃 **Juice Shop** | `localhost` | - | - | - | 3000 |
-| 🔥 **DVWA** | `localhost` | - | - | - | 8080 |
+> ⚠️ **Importante:** Rede Interna é **P2P** (peer-to-peer). Não existe gateway! As VMs se comunicam diretamente entre si.
+
+| Máquina | IP | Máscara | DNS | Portas Expostas |
+|---------|-----|---------|-----|-----------------|
+| 🐉 **Kali Linux** | `192.168.56.10` | 255.255.255.0 | 8.8.8.8 | 22 (SSH) |
+| 💀 **Metasploitable 2** | `192.168.56.101` | 255.255.255.0 | 8.8.8.8 | 21,22,23,25,80,139,445,3306,5432,8080 |
+| 💀 **Metasploitable 3 Linux** | `192.168.56.102` | 255.255.255.0 | 8.8.8.8 | 21,22,23,25,80,139,445,3306,8080,8181,8443 |
+| 🪟 **Metasploitable 3 Windows** | `192.168.56.103` | 255.255.255.0 | 8.8.8.8 | 21,22,80,135,139,445,3389,5985,5986 |
+| 🧃 **Juice Shop** | `localhost` | - | - | 3000 |
+| 🔥 **DVWA** | `localhost` | - | - | 8080 |
 
 ### Diagrama de Portas
 
@@ -265,6 +267,8 @@ cd cyberlab
 
 Cada VM precisa ter seu IP estático configurado. Isso é feito **dentro de cada VM**.
 
+> ⚠️ **Rede Interna não tem gateway!** Não configure gateway. As VMs se comunicam diretamente.
+
 ### 🐉 Kali Linux
 
 **Acesse via terminal:**
@@ -285,8 +289,6 @@ auto eth0
 iface eth0 inet static
     address 192.168.56.10
     netmask 255.255.255.0
-    gateway 192.168.56.1
-    dns-nameservers 8.8.8.8 8.8.4.4
 ```
 
 **Reinicie a rede:**
@@ -297,7 +299,7 @@ sudo systemctl restart networking
 **Verifique:**
 ```bash
 ip a
-ping 192.168.56.1
+ping 192.168.56.101
 ```
 
 ---
@@ -322,8 +324,6 @@ auto eth0
 iface eth0 inet static
     address 192.168.56.101
     netmask 255.255.255.0
-    gateway 192.168.56.1
-    dns-nameservers 8.8.8.8 8.8.4.4
 ```
 
 **Reinicie a rede:**
@@ -353,8 +353,6 @@ auto eth0
 iface eth0 inet static
     address 192.168.56.102
     netmask 255.255.255.0
-    gateway 192.168.56.1
-    dns-nameservers 8.8.8.8 8.8.4.4
 ```
 
 **Reinicie a rede:**
@@ -372,14 +370,14 @@ sudo restart networking
 C:\CyberLab\Scripts\setup-metasploitable3-windows.bat
 
 # OU configure manualmente via PowerShell:
-netsh interface ip set address "Local Area Connection" static 192.168.56.103 255.255.255.0 192.168.56.1
+netsh interface ip set address "Local Area Connection" static 192.168.56.103 255.255.255.0
 netsh interface ip set dns "Local Area Connection" static 8.8.8.8
 ```
 
 **Verifique:**
 ```cmd
 ipconfig
-ping 192.168.56.1
+ping 192.168.56.10
 ```
 
 ---
