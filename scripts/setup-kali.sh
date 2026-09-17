@@ -21,8 +21,8 @@ auto lo
 iface lo inet loopback
 
 # Rede Principal - CyberLab (Atacante)
-auto eth0
-iface eth0 inet static
+auto eth1
+iface eth1 inet static
     address 192.168.56.10
     netmask 255.255.255.0
 EOF

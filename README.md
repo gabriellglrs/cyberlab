@@ -67,38 +67,40 @@ O **CyberLab** é um laboratório isolado e seguro para aprender cybersecurity n
 │                       Oracle VirtualBox                             │
 │                                                                     │
 │    ┌─────────────────────────────────────────────────────────┐     │
-│    │           REDE: CyberLab (Internal Network)              │     │
-│    │                 192.168.56.0/24                          │     │
-│    │                 ⚠️ SEM GATEWAY (P2P)                     │     │
-│    │                                                          │     │
-│    │   ┌────────────────┐     ┌────────────────┐             │     │
-│    │   │   KALI LINUX   │◀───▶│ METASPLOIT. 2  │             │     │
-│    │   │    Atacante    │     │   Alvo Linux   │             │     │
-│    │   │  .56.10 :22    │     │  .56.101 :22   │             │     │
-│    │   └────────────────┘     └────────────────┘             │     │
-│    │          │    ▲                │    ▲                    │     │
-│    │          │    │                │    │                    │     │
-│    │          ▼    │                ▼    │                    │     │
-│    │   ┌────────────────┐     ┌────────────────┐             │     │
-│    │   │ METASPLOIT. 3  │◀───▶│ METASPLOIT. 3  │             │     │
-│    │   │  Linux (14.04) │     │Windows(2008R2) │             │     │
-│    │   │  .56.102 :22   │     │  .56.103 :3389 │             │     │
-│    │   └────────────────┘     └────────────────┘             │     │
-│    │                                                          │     │
-│    │   ⚠️ VMs se comunicam DIRETAMENTE (sem router)           │     │
+│    │              INTERNET (Adapter 1: NAT)                   │     │
+│    └─────────────────────────────────────────────────────────┘     │
+│           │              │              │              │             │
+│           ▼              ▼              ▼              ▼             │
+│    ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐     │
+│    │   KALI   │   │   MS2    │   │ MS3-Linux│   │MS3-Windows│    │
+│    │   .10    │   │  .101    │   │  .102    │   │  .103    │     │
+│    └────┬─────┘   └────┬─────┘   └────┬─────┘   └────┬─────┘     │
+│         │              │              │              │             │
+│         └──────────────┴──────────────┴──────────────┘             │
+│                                                                     │
+│    ┌─────────────────────────────────────────────────────────┐     │
+│    │        INTERNAL NETWORK (Adapter 2: 192.168.56.0/24)    │     │
+│    │              VMs comunicam DIRETAMENTE                   │     │
 │    └─────────────────────────────────────────────────────────┘     │
 │                                                                     │
 │    ┌─────────────────────────────────────────────────────────┐     │
 │    │                    DOCKER HOST (no Windows)              │     │
-│    │                                                          │     │
 │    │   ┌────────────────┐     ┌────────────────┐             │     │
 │    │   │  JUICE SHOP    │     │     DVWA       │             │     │
 │    │   │ localhost:3000 │     │ localhost:8080 │             │     │
 │    │   └────────────────┘     └────────────────┘             │     │
-│    │                                                          │     │
 │    └─────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+### Configuração de Rede por VM
+
+| VM | Adapter 1 (NAT) | Adapter 2 (IntNet) |
+|----|----|----|
+| Kali | DHCP (internet) | `192.168.56.10` |
+| MS2 | DHCP (internet) | `192.168.56.101` |
+| MS3-Linux | DHCP (internet) | `192.168.56.102` |
+| MS3-Windows | DHCP (internet) | `192.168.56.103` |
 
 ---
 
@@ -106,9 +108,9 @@ O **CyberLab** é um laboratório isolado e seguro para aprender cybersecurity n
 
 ### Tabela de Endereçamento
 
-> ⚠️ **Importante:** Rede Interna é **P2P** (peer-to-peer). Não existe gateway! As VMs se comunicam diretamente entre si.
+> ℹ️ **Configuração:** Cada VM tem 2 placas de rede. NAT para internet, Internal Network para o lab.
 
-| Máquina | IP | Máscara | DNS | Portas Expostas |
+| Máquina | IP (IntNet) | Máscara | DNS | Portas Expostas |
 |---------|-----|---------|-----|-----------------|
 | 🐉 **Kali Linux** | `192.168.56.10` | 255.255.255.0 | 8.8.8.8 | 22 (SSH) |
 | 💀 **Metasploitable 2** | `192.168.56.101` | 255.255.255.0 | 8.8.8.8 | 21,22,23,25,80,139,445,3306,5432,8080 |

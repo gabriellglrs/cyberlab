@@ -1,7 +1,7 @@
 @echo off
 REM ============================================
 REM CyberLab - Metasploitable 3 Windows Configuration
-REM IP: 192.168.56.103
+REM IP: 192.168.56.103 (Internal Network)
 REM ============================================
 
 echo ============================================
@@ -19,24 +19,28 @@ if %errorLevel% neq 0 (
     exit /b 1
 )
 
-REM Configurar IP Estatico
-echo Configurando IP...
-netsh interface ip set address "Local Area Connection" static 192.168.56.103 255.255.255.0
+REM Listar placas de rede
+echo Placas de rede disponiveis:
+netsh interface show interface
+echo.
+
+REM Configurar IP Estatico na segunda placa (Internal Network)
+echo Configurando IP na Internal Network...
+netsh interface ip set address "Ethernet 2" static 192.168.56.103 255.255.255.0
 
 REM Configurar DNS
 echo Configurando DNS...
-netsh interface ip set dns "Local Area Connection" static 8.8.8.8
-netsh interface ip add dns "Local Area Connection" 8.8.4.4 index=2
+netsh interface ip set dns "Ethernet 2" static 8.8.8.8
 
 echo.
 echo ============================================
 echo   Metasploitable 3 Windows configurado!
 echo   IP: 192.168.56.103
-echo   Gateway: 192.168.56.1
+echo   Placa: Ethernet 2 (Internal Network)
 echo   DNS: 8.8.8.8
 echo ============================================
 echo.
 echo Teste com: ipconfig
-echo Teste conexao: ping 192.168.56.1
+echo Teste conexao: ping 192.168.56.10
 echo.
 pause
