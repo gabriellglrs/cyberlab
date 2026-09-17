@@ -1,0 +1,42 @@
+# ============================================
+# CyberLab - Git Ignore
+# ============================================
+
+# VM Images (grandes demais para Git)
+*.vdi
+*.vmdk
+*.vhd
+*.vhdx
+*.qcow2
+*.img
+
+# Downloads (grandes demais para Git)
+Downloads/*.7z
+Downloads/*.zip
+Downloads/*.iso
+Downloads/*.ova
+
+# Vagrant
+.vagrant/
+metasploitable3-workspace/
+
+# VM Directories (locais)
+VMs/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.lnk
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+.Spotlight-V100
+.Trashes

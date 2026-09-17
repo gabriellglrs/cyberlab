@@ -1,0 +1,45 @@
+# ============================================
+# CyberLab - Kali Linux Network Configuration
+# IP: 192.168.56.10
+# ============================================
+
+#!/bin/bash
+
+echo "============================================"
+echo "  Configurando Kali Linux - Atacante"
+echo "  IP: 192.168.56.10"
+echo "============================================"
+echo ""
+
+# Backup do arquivo original
+sudo cp /etc/network/interfaces /etc/network/interfaces.bak 2>/dev/null
+
+# Configuracao de rede
+sudo cat > /etc/network/interfaces << 'EOF'
+# Loopback
+auto lo
+iface lo inet loopback
+
+# Rede Principal - CyberLab (Atacante)
+auto eth0
+iface eth0 inet static
+    address 192.168.56.10
+    netmask 255.255.255.0
+    gateway 192.168.56.1
+    dns-nameservers 8.8.8.8 8.8.4.4
+EOF
+
+# Reiniciar rede
+sudo systemctl restart networking 2>/dev/null || sudo service networking restart
+
+echo ""
+echo "============================================"
+echo "  Kali Linux configurado!"
+echo "  IP: 192.168.56.10"
+echo "  Gateway: 192.168.56.1"
+echo "  DNS: 8.8.8.8"
+echo "============================================"
+echo ""
+echo "Teste com: ip a"
+echo "Teste conexao: ping 192.168.56.1"
+echo ""

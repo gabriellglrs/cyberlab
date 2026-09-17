@@ -1,0 +1,61 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# ============================================
+# CyberLab - Metasploitable 3 Configuration
+# ============================================
+#
+# Metasploitable 3 - Linux (Ubuntu 14.04)
+#   IP: 192.168.56.102
+#   Login: vagrant/vagrant
+#   Vulnerabilidades: GlassFish, Tomcat, ProFTPd, Samba, MySQL
+#
+# Metasploitable 3 - Windows (Server 2008 R2)
+#   IP: 192.168.56.103
+#   Login: vagrant/vagrant
+#   Vulnerabilidades: IIS, SMB, RDP, HTTP
+#
+# ============================================
+
+Vagrant.configure("2") do |config|
+
+  # ==========================================
+  # Metasploitable 3 - Linux (Ubuntu 14.04)
+  # ==========================================
+  config.vm.define "ms3-linux" do |ms3linux|
+    ms3linux.vm.box = "rapid7/metasploitable3-ub1404"
+    ms3linux.vm.hostname = "metasploitable3-linux"
+    ms3linux.vm.network "private_network", ip: "192.168.56.102", virtualbox__intnet: "CyberLab"
+    ms3linux.ssh.username = "vagrant"
+    ms3linux.ssh.password = "vagrant"
+    ms3linux.ssh.insert_key = false
+    ms3linux.vm.provider "virtualbox" do |vb|
+      vb.name = "Metasploitable3-Linux"
+      vb.memory = 2048
+      vb.cpus = 2
+      vb.gui = false
+    end
+  end
+
+  # ==========================================
+  # Metasploitable 3 - Windows (Server 2008)
+  # ==========================================
+  config.vm.define "ms3-windows" do |ms3win|
+    ms3win.vm.box = "rapid7/metasploitable3-win2k8"
+    ms3win.vm.hostname = "metasploitable3-windows"
+    ms3win.vm.network "private_network", ip: "192.168.56.103", virtualbox__intnet: "CyberLab"
+    ms3win.vm.communicator = "winrm"
+    ms3win.winrm.username = "vagrant"
+    ms3win.winrm.password = "vagrant"
+    ms3win.winrm.transport = :plaintext
+    ms3win.winrm.basic_auth_only = true
+    ms3win.vm.guest = :windows
+    ms3win.vm.boot_timeout = 600
+    ms3win.vm.provider "virtualbox" do |vb|
+      vb.name = "Metasploitable3-Windows"
+      vb.memory = 4096
+      vb.cpus = 2
+      vb.gui = false
+    end
+  end
+
+end
